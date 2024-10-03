@@ -41,7 +41,7 @@ export class AppComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
         console.log("Menghapus data");
-      }
+      } 
     });
   }
 }
