@@ -1,0 +1,597 @@
+== membuat komponen baru ==
+ng generate component xyz
+== menjalankan unit test ==
+ng test
+== melakukan build aplikasi ==
+ng build
+
+
+Di dalam folder `src/app` pada proyek Angular, terdapat beberapa file dan folder yang dibangkitkan secara otomatis ketika proyek atau komponen baru dibuat. Setiap file dan folder memiliki perannya masing-masing untuk membangun aplikasi Angular secara modular. Berikut adalah penjelasan mengenai file-file utama yang biasanya ada di dalam folder `src/app` beserta contoh penggunaannya:
+
+### 1. **app.module.ts** (Module Utama Aplikasi)
+
+File `app.module.ts` adalah tempat di mana **modul utama** aplikasi didefinisikan. Di dalam Angular, modul adalah kumpulan dari komponen, service, dan lain-lain yang terkait dengan suatu bagian aplikasi. 
+
+#### Contoh Penggunaan:
+
+```typescript
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+import { CalculatorComponent } from './calculator/calculator.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,    // Komponen utama aplikasi
+    CalculatorComponent // Komponen yang baru ditambahkan
+  ],
+  imports: [
+    BrowserModule   // Modul untuk aplikasi berbasis browser
+  ],
+  providers: [],    // Service yang tersedia secara global
+  bootstrap: [AppComponent]  // Komponen utama yang dijalankan saat aplikasi dimulai
+})
+export class AppModule { }
+```
+
+Pada contoh di atas, `AppModule` mendeklarasikan dua komponen (`AppComponent` dan `CalculatorComponent`), serta mengimpor modul `BrowserModule` yang diperlukan untuk aplikasi Angular berbasis web.
+
+### 2. **app.component.ts** (Komponen Utama Aplikasi)
+
+File `app.component.ts` adalah **komponen utama** aplikasi. Komponen ini biasanya adalah "root component" yang memuat seluruh tampilan aplikasi saat pertama kali di-render.
+
+#### Contoh Penggunaan:
+
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root', // Tag HTML yang digunakan untuk memanggil komponen ini
+  templateUrl: './app.component.html', // Template HTML yang digunakan
+  styleUrls: ['./app.component.css']  // Style yang digunakan
+})
+export class AppComponent {
+  title = 'Aplikasi Angular Saya';  // Variabel yang bisa digunakan di dalam template
+}
+```
+
+Pada komponen ini, variabel `title` didefinisikan dan dapat digunakan di dalam file template HTML (`app.component.html`).
+
+### 3. **app.component.html** (Template HTML)
+
+File ini adalah **template HTML** dari komponen utama (`AppComponent`). Template ini menentukan bagaimana tampilan komponen di-render di browser.
+
+#### Contoh Penggunaan:
+
+```html
+<h1>Selamat datang di {{ title }}!</h1>
+<app-calculator></app-calculator>
+```
+
+Pada contoh ini, variabel `title` yang didefinisikan di dalam `app.component.ts` digunakan dalam template menggunakan sintaks binding `{{ title }}`. Selain itu, komponen `CalculatorComponent` (yang kita buat sebelumnya) ditampilkan menggunakan tag `<app-calculator>`.
+
+### 4. **app.component.css** (Style Komponen)
+
+File ini adalah tempat untuk mendefinisikan **style** khusus untuk komponen `AppComponent`. Style di sini hanya berlaku untuk komponen ini, dan tidak mempengaruhi komponen lain.
+
+#### Contoh Penggunaan:
+
+```css
+h1 {
+  color: blue;
+  font-family: Arial, sans-serif;
+}
+```
+
+Pada contoh di atas, heading `<h1>` di `app.component.html` akan memiliki warna biru dan menggunakan font Arial.
+
+### 5. **calculator.component.ts** (Komponen Baru)
+
+Jika kamu membuat komponen baru, misalnya `CalculatorComponent`, maka Angular akan membuat beberapa file, seperti `calculator.component.ts`, `calculator.component.html`, `calculator.component.css`, dan `calculator.component.spec.ts`.
+
+File `calculator.component.ts` mendefinisikan logika dan data untuk komponen kalkulator.
+
+#### Contoh Penggunaan:
+
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-calculator',
+  templateUrl: './calculator.component.html',
+  styleUrls: ['./calculator.component.css']
+})
+export class CalculatorComponent {
+  result: number = 0;
+
+  add(a: number, b: number): number {
+    this.result = a + b;
+    return this.result;
+  }
+}
+```
+
+Ini mendefinisikan komponen kalkulator yang memiliki metode `add` untuk menjumlahkan dua angka.
+
+### 6. **calculator.component.html** (Template HTML Komponen Baru)
+
+File ini mendefinisikan bagaimana tampilan komponen kalkulator di-render.
+
+#### Contoh Penggunaan:
+
+```html
+<div>
+  <h2>Hasil: {{ result }}</h2>
+  <button (click)="add(3, 4)">Tambah 3 + 4</button>
+</div>
+```
+
+Template ini menggunakan binding untuk menampilkan hasil perhitungan dan menambahkan event binding `(click)` untuk memanggil metode `add` ketika tombol ditekan.
+
+### 7. **calculator.component.spec.ts** (File Unit Testing)
+
+Ini adalah file untuk melakukan **unit testing** terhadap komponen `CalculatorComponent`. Angular menggunakan Jasmine dan Karma untuk melakukan testing.
+
+#### Contoh Penggunaan:
+
+```typescript
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CalculatorComponent } from './calculator.component';
+
+describe('CalculatorComponent', () => {
+  let component: CalculatorComponent;
+  let fixture: ComponentFixture<CalculatorComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ CalculatorComponent ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(CalculatorComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create the calculator component', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should return correct sum', () => {
+    expect(component.add(2, 3)).toBe(5);
+  });
+});
+```
+
+Ini adalah contoh unit test yang menguji apakah komponen kalkulator bekerja sesuai harapan, seperti memeriksa apakah metode `add()` menghasilkan penjumlahan yang benar.
+
+### 8. **service.ts (Optional)**
+
+Jika kamu membuat **service** di Angular, itu biasanya diletakkan dalam folder `src/app/services/`. Service digunakan untuk memisahkan logika bisnis atau operasi yang digunakan oleh beberapa komponen.
+
+#### Contoh Penggunaan:
+
+Misalnya, service untuk operasi kalkulator:
+
+```typescript
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CalculatorService {
+  add(a: number, b: number): number {
+    return a + b;
+  }
+}
+```
+
+Kemudian, service ini dapat di-inject ke dalam komponen dengan menggunakan **dependency injection**.
+
+### Kesimpulan
+
+- **app.module.ts**: Tempat mendeklarasikan modul, komponen, dan service yang digunakan.
+- **app.component.ts**: Komponen utama yang mengendalikan aplikasi.
+- **app.component.html**: Template HTML untuk komponen utama.
+- **app.component.css**: Style khusus untuk komponen utama.
+- **Komponen lain (misalnya `calculator.component.ts`)**: Setiap komponen memiliki logika, template HTML, dan style yang terkait.
+- **spec.ts**: File untuk testing setiap komponen atau service.
+
+Dengan memahami struktur ini, kamu dapat lebih mudah membangun dan mengorganisir aplikasi Angular dengan baik.
+
+
+========Untuk membuat struktur proyek **Angular** lebih rapi, kamu bisa **mengelompokkan file-file** ke dalam folder berdasarkan fitur atau modul. Ini sangat membantu dalam mengorganisir aplikasi Angular yang besar agar mudah dikelola dan dibaca.
+
+Berikut beberapa cara untuk mengelompokkan file agar lebih rapi:
+
+### 1. **Feature-Based Folder Structure (Berdasarkan Fitur)**
+
+Kamu bisa mengelompokkan file berdasarkan fitur atau komponen yang saling terkait dalam satu folder. Misalnya, jika aplikasi memiliki beberapa fitur seperti **auth**, **dashboard**, dan **calculator**, kamu bisa membuat folder seperti berikut:
+
+```bash
+src/
+└── app/
+    ├── auth/
+    │   ├── login/
+    │   │   ├── login.component.ts
+    │   │   ├── login.component.html
+    │   │   ├── login.component.css
+    │   │   └── login.component.spec.ts
+    │   ├── register/
+    │   │   ├── register.component.ts
+    │   │   ├── register.component.html
+    │   │   ├── register.component.css
+    │   │   └── register.component.spec.ts
+    ├── calculator/
+    │   ├── calculator.component.ts
+    │   ├── calculator.component.html
+    │   ├── calculator.component.css
+    │   └── calculator.component.spec.ts
+    ├── dashboard/
+    │   ├── dashboard.component.ts
+    │   ├── dashboard.component.html
+    │   ├── dashboard.component.css
+    │   └── dashboard.component.spec.ts
+    ├── app.module.ts
+    ├── app.component.ts
+    ├── app.component.html
+    └── app.component.css
+```
+
+#### Cara Mengelompokkan Komponen:
+
+1. **Buat folder baru** untuk setiap fitur.
+2. **Pindahkan komponen** yang terkait ke dalam folder tersebut. Misalnya, semua file yang berhubungan dengan `CalculatorComponent` dipindahkan ke dalam folder `calculator/`.
+
+#### Mengupdate `app.module.ts`:
+
+Setelah kamu memindahkan file, pastikan kamu memperbarui jalur impor (import path) di `app.module.ts`. Misalnya, setelah memindahkan `CalculatorComponent`:
+
+```typescript
+import { CalculatorComponent } from './calculator/calculator.component';
+```
+
+Jika kamu memindahkan komponen ke dalam folder tertentu, perhatikan untuk memperbarui semua referensi agar path baru dikenali.
+
+### 2. **Module-Based Folder Structure (Berdasarkan Modul)**
+
+Jika aplikasi kamu cukup besar, lebih baik untuk membagi fitur menjadi **modul Angular**. Modul-modul ini mengelompokkan komponen, service, dan resource lainnya yang berkaitan.
+
+1. **Buat modul** untuk setiap fitur menggunakan Angular CLI:
+   ```bash
+   ng generate module calculator
+   ```
+
+   Ini akan membuat file `calculator.module.ts`.
+
+2. **Pindahkan komponen terkait ke dalam modul**:
+   Setelah modul dibuat, komponen yang terkait dengan fitur ini bisa dipindahkan ke dalam folder modul. Struktur file-nya akan menjadi seperti ini:
+
+   ```bash
+   src/
+   └── app/
+       ├── calculator/
+       │   ├── calculator.module.ts
+       │   ├── calculator.component.ts
+       │   ├── calculator.component.html
+       │   ├── calculator.component.css
+       │   └── calculator.component.spec.ts
+       ├── dashboard/
+       │   ├── dashboard.module.ts
+       │   ├── dashboard.component.ts
+       │   ├── dashboard.component.html
+       │   ├── dashboard.component.css
+       │   └── dashboard.component.spec.ts
+       ├── auth/
+       │   ├── auth.module.ts
+       │   ├── login/
+       │   │   ├── login.component.ts
+       │   │   ├── login.component.html
+       │   │   ├── login.component.css
+       │   │   └── login.component.spec.ts
+       └── app.module.ts
+   ```
+
+3. **Perbarui modul**:
+   Setelah kamu memindahkan file komponen ke modul baru, pastikan modul tersebut terhubung dengan modul utama (`AppModule`).
+
+   ```typescript
+   import { NgModule } from '@angular/core';
+   import { CommonModule } from '@angular/common';
+   import { CalculatorComponent } from './calculator.component';
+
+   @NgModule({
+     declarations: [CalculatorComponent],
+     imports: [CommonModule],
+     exports: [CalculatorComponent] // Ekspor agar bisa digunakan di modul lain
+   })
+   export class CalculatorModule {}
+   ```
+
+4. **Impor modul ke `AppModule`**:
+   Setelah modul dibuat, impor modul baru ke dalam `AppModule`:
+
+   ```typescript
+   import { CalculatorModule } from './calculator/calculator.module';
+
+   @NgModule({
+     imports: [
+       BrowserModule,
+       CalculatorModule, // Modul baru ditambahkan
+     ],
+     bootstrap: [AppComponent]
+   })
+   export class AppModule { }
+   ```
+
+### 3. **Shared Module (Modul Berbagi)**
+
+Jika ada komponen atau service yang digunakan di beberapa modul, kamu bisa membuat **Shared Module** untuk mengelola resource yang digunakan bersama.
+
+1. Buat modul bernama `SharedModule` untuk resource yang digunakan bersama:
+   ```bash
+   ng generate module shared
+   ```
+
+2. Pindahkan komponen atau directive yang sering digunakan ke dalam `SharedModule`. Misalnya, komponen button atau alert yang sering digunakan.
+
+3. Ekspor resource dari `SharedModule` agar bisa digunakan di modul lain:
+   
+   ```typescript
+   @NgModule({
+     declarations: [
+       SharedButtonComponent,
+       SharedAlertComponent
+     ],
+     imports: [
+       CommonModule
+     ],
+     exports: [ // Ekspor komponen agar bisa diimpor modul lain
+       SharedButtonComponent,
+       SharedAlertComponent
+     ]
+   })
+   export class SharedModule { }
+   ```
+
+4. Di setiap modul yang ingin menggunakan resource ini, impor `SharedModule`:
+
+   ```typescript
+   import { SharedModule } from '../shared/shared.module';
+   ```
+
+### 4. **Service-Based Structure**
+
+Jika kamu memiliki banyak service, buat folder terpisah bernama `services/` untuk menyimpan semua file service.
+
+```bash
+src/
+└── app/
+    ├── services/
+    │   ├── auth.service.ts
+    │   ├── calculator.service.ts
+    └── app.module.ts
+```
+
+Di dalam file `app.module.ts`, pastikan semua service ini terdaftar sebagai provider jika diperlukan di seluruh aplikasi.
+
+```typescript
+import { AuthService } from './services/auth.service';
+import { CalculatorService } from './services/calculator.service';
+
+@NgModule({
+  providers: [AuthService, CalculatorService]
+})
+export class AppModule { }
+```
+
+### Kesimpulan
+
+Ada beberapa cara untuk mengelompokkan file agar proyek Angular lebih rapi:
+1. **Feature-Based Structure**: Mengelompokkan berdasarkan fitur atau komponen.
+2. **Module-Based Structure**: Membuat modul untuk setiap fitur, lalu mengelompokkan komponen dan resource yang terkait.
+3. **Shared Module**: Menyediakan resource yang digunakan di banyak tempat, seperti komponen atau service.
+4. **Service-Based Structure**: Mengelompokkan service di satu tempat.
+
+Struktur ini akan membantu proyek Angular menjadi lebih mudah dikelola, terutama saat aplikasi menjadi lebih besar dan kompleks.
+
+============================================================================================================
+
+============================================================================================================
+
+Untuk membuat struktur proyek **Angular** lebih rapi, kamu bisa **mengelompokkan file-file** ke dalam folder berdasarkan fitur atau modul. Ini sangat membantu dalam mengorganisir aplikasi Angular yang besar agar mudah dikelola dan dibaca.
+
+Berikut beberapa cara untuk mengelompokkan file agar lebih rapi:
+
+### 1. **Feature-Based Folder Structure (Berdasarkan Fitur)**
+
+Kamu bisa mengelompokkan file berdasarkan fitur atau komponen yang saling terkait dalam satu folder. Misalnya, jika aplikasi memiliki beberapa fitur seperti **auth**, **dashboard**, dan **calculator**, kamu bisa membuat folder seperti berikut:
+
+```bash
+src/
+└── app/
+    ├── auth/
+    │   ├── login/
+    │   │   ├── login.component.ts
+    │   │   ├── login.component.html
+    │   │   ├── login.component.css
+    │   │   └── login.component.spec.ts
+    │   ├── register/
+    │   │   ├── register.component.ts
+    │   │   ├── register.component.html
+    │   │   ├── register.component.css
+    │   │   └── register.component.spec.ts
+    ├── calculator/
+    │   ├── calculator.component.ts
+    │   ├── calculator.component.html
+    │   ├── calculator.component.css
+    │   └── calculator.component.spec.ts
+    ├── dashboard/
+    │   ├── dashboard.component.ts
+    │   ├── dashboard.component.html
+    │   ├── dashboard.component.css
+    │   └── dashboard.component.spec.ts
+    ├── app.module.ts
+    ├── app.component.ts
+    ├── app.component.html
+    └── app.component.css
+```
+
+#### Cara Mengelompokkan Komponen:
+
+1. **Buat folder baru** untuk setiap fitur.
+2. **Pindahkan komponen** yang terkait ke dalam folder tersebut. Misalnya, semua file yang berhubungan dengan `CalculatorComponent` dipindahkan ke dalam folder `calculator/`.
+
+#### Mengupdate `app.module.ts`:
+
+Setelah kamu memindahkan file, pastikan kamu memperbarui jalur impor (import path) di `app.module.ts`. Misalnya, setelah memindahkan `CalculatorComponent`:
+
+```typescript
+import { CalculatorComponent } from './calculator/calculator.component';
+```
+
+Jika kamu memindahkan komponen ke dalam folder tertentu, perhatikan untuk memperbarui semua referensi agar path baru dikenali.
+
+### 2. **Module-Based Folder Structure (Berdasarkan Modul)**
+
+Jika aplikasi kamu cukup besar, lebih baik untuk membagi fitur menjadi **modul Angular**. Modul-modul ini mengelompokkan komponen, service, dan resource lainnya yang berkaitan.
+
+1. **Buat modul** untuk setiap fitur menggunakan Angular CLI:
+   ```bash
+   ng generate module calculator
+   ```
+
+   Ini akan membuat file `calculator.module.ts`.
+
+2. **Pindahkan komponen terkait ke dalam modul**:
+   Setelah modul dibuat, komponen yang terkait dengan fitur ini bisa dipindahkan ke dalam folder modul. Struktur file-nya akan menjadi seperti ini:
+
+   ```bash
+   src/
+   └── app/
+       ├── calculator/
+       │   ├── calculator.module.ts
+       │   ├── calculator.component.ts
+       │   ├── calculator.component.html
+       │   ├── calculator.component.css
+       │   └── calculator.component.spec.ts
+       ├── dashboard/
+       │   ├── dashboard.module.ts
+       │   ├── dashboard.component.ts
+       │   ├── dashboard.component.html
+       │   ├── dashboard.component.css
+       │   └── dashboard.component.spec.ts
+       ├── auth/
+       │   ├── auth.module.ts
+       │   ├── login/
+       │   │   ├── login.component.ts
+       │   │   ├── login.component.html
+       │   │   ├── login.component.css
+       │   │   └── login.component.spec.ts
+       └── app.module.ts
+   ```
+
+3. **Perbarui modul**:
+   Setelah kamu memindahkan file komponen ke modul baru, pastikan modul tersebut terhubung dengan modul utama (`AppModule`).
+
+   ```typescript
+   import { NgModule } from '@angular/core';
+   import { CommonModule } from '@angular/common';
+   import { CalculatorComponent } from './calculator.component';
+
+   @NgModule({
+     declarations: [CalculatorComponent],
+     imports: [CommonModule],
+     exports: [CalculatorComponent] // Ekspor agar bisa digunakan di modul lain
+   })
+   export class CalculatorModule {}
+   ```
+
+4. **Impor modul ke `AppModule`**:
+   Setelah modul dibuat, impor modul baru ke dalam `AppModule`:
+
+   ```typescript
+   import { CalculatorModule } from './calculator/calculator.module';
+
+   @NgModule({
+     imports: [
+       BrowserModule,
+       CalculatorModule, // Modul baru ditambahkan
+     ],
+     bootstrap: [AppComponent]
+   })
+   export class AppModule { }
+   ```
+
+### 3. **Shared Module (Modul Berbagi)**
+
+Jika ada komponen atau service yang digunakan di beberapa modul, kamu bisa membuat **Shared Module** untuk mengelola resource yang digunakan bersama.
+
+1. Buat modul bernama `SharedModule` untuk resource yang digunakan bersama:
+   ```bash
+   ng generate module shared
+   ```
+
+2. Pindahkan komponen atau directive yang sering digunakan ke dalam `SharedModule`. Misalnya, komponen button atau alert yang sering digunakan.
+
+3. Ekspor resource dari `SharedModule` agar bisa digunakan di modul lain:
+   
+   ```typescript
+   @NgModule({
+     declarations: [
+       SharedButtonComponent,
+       SharedAlertComponent
+     ],
+     imports: [
+       CommonModule
+     ],
+     exports: [ // Ekspor komponen agar bisa diimpor modul lain
+       SharedButtonComponent,
+       SharedAlertComponent
+     ]
+   })
+   export class SharedModule { }
+   ```
+
+4. Di setiap modul yang ingin menggunakan resource ini, impor `SharedModule`:
+
+   ```typescript
+   import { SharedModule } from '../shared/shared.module';
+   ```
+
+### 4. **Service-Based Structure**
+
+Jika kamu memiliki banyak service, buat folder terpisah bernama `services/` untuk menyimpan semua file service.
+
+```bash
+src/
+└── app/
+    ├── services/
+    │   ├── auth.service.ts
+    │   ├── calculator.service.ts
+    └── app.module.ts
+```
+
+Di dalam file `app.module.ts`, pastikan semua service ini terdaftar sebagai provider jika diperlukan di seluruh aplikasi.
+
+```typescript
+import { AuthService } from './services/auth.service';
+import { CalculatorService } from './services/calculator.service';
+
+@NgModule({
+  providers: [AuthService, CalculatorService]
+})
+export class AppModule { }
+```
+
+### Kesimpulan
+
+Ada beberapa cara untuk mengelompokkan file agar proyek Angular lebih rapi:
+1. **Feature-Based Structure**: Mengelompokkan berdasarkan fitur atau komponen.
+2. **Module-Based Structure**: Membuat modul untuk setiap fitur, lalu mengelompokkan komponen dan resource yang terkait.
+3. **Shared Module**: Menyediakan resource yang digunakan di banyak tempat, seperti komponen atau service.
+4. **Service-Based Structure**: Mengelompokkan service di satu tempat.
+
+Struktur ini akan membantu proyek Angular menjadi lebih mudah dikelola, terutama saat aplikasi menjadi lebih besar dan kompleks.
